@@ -1,0 +1,19 @@
+{
+  "name": "chainforensics",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "hardhat:test": "hardhat test",
+    "hardhat:compile": "hardhat compile",
+    "hardhat:node": "hardhat node",
+    "hardhat:deploy": "hardhat run scripts/deploy.js --network localhost"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox-mocha-ethers": "^4.0.0",
+    "hardhat": "^3.18.0"
+  },
+  "dependencies": {
+    "@nomicfoundation/edr-win32-x64-msvc": "0.22.0",
+    "dotenv": "^18.0.4"
+  }
+}

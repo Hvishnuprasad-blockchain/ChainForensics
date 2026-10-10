@@ -1,0 +1,46 @@
+# ─── Secrets & credentials ───
+.env
+.env.*
+*.key
+*private_key*
+*secret*
+
+# ─── Python ───
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+*.egg
+dist/
+build/
+.venv/
+venv/
+*.whl
+
+# ─── Node / Hardhat ───
+node_modules/
+cache/
+artifacts/
+typechain-types/
+
+# ─── IDE ───
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─── Test / Coverage ───
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ─── Data & Models (too large for git) ───
+data/raw/
+models/*.joblib
+
+# ─── OS ───
+Thumbs.db
+.DS_Store
+
+# ─── Database ───
+*.db

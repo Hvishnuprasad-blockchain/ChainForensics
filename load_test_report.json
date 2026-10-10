@@ -1,0 +1,96 @@
+{
+  "test_scope": "POST /incidents/detect \u2014 off-chain pipeline only. Blockchain env vars blanked via unittest.mock.patch.dict. No Sepolia RPC calls made.",
+  "disclaimer": "IMPORTANT: This test does NOT reflect production latency. Live Sepolia writes in earlier runs took 8-35 s per request (dominated by block confirmation + QuickNode RPC latency). Nonce serialization limits concurrent Sepolia writes to ~1-2 req/min. This test only validates the off-chain Python/SQLite pipeline.",
+  "results": [
+    {
+      "concurrency": 1,
+      "total_requests": 20,
+      "successes": 20,
+      "failures": 0,
+      "success_rate_pct": 100.0,
+      "wall_time_s": 0.529,
+      "throughput_rps": 37.84,
+      "latency_ms": {
+        "min": 22.3,
+        "max": 73.1,
+        "mean": 26.3,
+        "p50": 23.8,
+        "p95": 26.5,
+        "p99": 26.5
+      },
+      "failure_details": []
+    },
+    {
+      "concurrency": 5,
+      "total_requests": 20,
+      "successes": 20,
+      "failures": 0,
+      "success_rate_pct": 100.0,
+      "wall_time_s": 0.413,
+      "throughput_rps": 48.47,
+      "latency_ms": {
+        "min": 27.4,
+        "max": 222.0,
+        "mean": 93.0,
+        "p50": 90.2,
+        "p95": 169.3,
+        "p99": 169.3
+      },
+      "failure_details": []
+    },
+    {
+      "concurrency": 10,
+      "total_requests": 20,
+      "successes": 20,
+      "failures": 0,
+      "success_rate_pct": 100.0,
+      "wall_time_s": 0.506,
+      "throughput_rps": 39.56,
+      "latency_ms": {
+        "min": 23.7,
+        "max": 495.1,
+        "mean": 194.3,
+        "p50": 160.9,
+        "p95": 462.5,
+        "p99": 462.5
+      },
+      "failure_details": []
+    },
+    {
+      "concurrency": 20,
+      "total_requests": 20,
+      "successes": 20,
+      "failures": 0,
+      "success_rate_pct": 100.0,
+      "wall_time_s": 0.726,
+      "throughput_rps": 27.55,
+      "latency_ms": {
+        "min": 94.5,
+        "max": 722.8,
+        "mean": 297.9,
+        "p50": 233.6,
+        "p95": 621.6,
+        "p99": 621.6
+      },
+      "failure_details": []
+    },
+    {
+      "concurrency": 40,
+      "total_requests": 20,
+      "successes": 20,
+      "failures": 0,
+      "success_rate_pct": 100.0,
+      "wall_time_s": 0.728,
+      "throughput_rps": 27.48,
+      "latency_ms": {
+        "min": 143.7,
+        "max": 722.7,
+        "mean": 289.6,
+        "p50": 224.0,
+        "p95": 604.5,
+        "p99": 604.5
+      },
+      "failure_details": []
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+name: ChainForensics CI
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    name: Lint (flake8)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install flake8
+        run: pip install flake8
+
+      - name: Run flake8
+        run: |
+          flake8 chainforensics/ \
+            --max-line-length=120 \
+            --extend-ignore=E501,W503 \
+            --exclude=chainforensics/__pycache__
+
+  test:
+    name: Full Test Suite + Coverage
+    runs-on: ubuntu-latest
+    needs: lint
+
+    env:
+      # No real blockchain keys — blockchain tests use mocks or are excluded.
+      # Tests that require a live node are excluded below.
+      CHAINFORENSIS_DATABASE_URL: "sqlite:///./test_chainforensics.db"
+      CHAINFORENSIS_API_KEY: "ci-test-api-key-do-not-use-in-production"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Set up Node.js (for Hardhat compile — generates ABI artifact)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Compile smart contract (generates ABI artifact required by Python client)
+        run: npm run hardhat:compile
+
+      - name: Run test suite with coverage
+        # Excluded tests require a live Sepolia/Hardhat node or real
+        # private key — these cannot run in CI without secrets.
+        # test_blockchain_local.py         — requires running Hardhat node
+        # test_blockchain_duplicate.py     — requires running Hardhat node
+        # test_sprint4_integration.py      — requires running Hardhat node
+        # test_sprint5_real_persistence.py — requires live Sepolia RPC + private key
+        run: |
+          pytest tests/ \
+            --ignore=tests/test_blockchain_local.py \
+            --ignore=tests/test_blockchain_duplicate.py \
+            --ignore=tests/test_sprint4_integration.py \
+            --ignore=tests/test_sprint5_real_persistence.py \
+            --cov=chainforensics \
+            --cov-report=term-missing \
+            --cov-report=xml \
+            --cov-fail-under=80 \
+            -v
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  contract-tests:
+    name: Smart Contract Tests (Hardhat)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Compile contracts
+        run: npm run hardhat:compile
+
+      - name: Run Hardhat tests
+        run: npm run hardhat:test
